@@ -1,4 +1,5 @@
 # weather_info
+https://satwikmalik.github.io/weather_info/
 Project: Air Quality Awareness Website 
 This project is a responsive, multi-page website designed to educate users about air quality. It provides information on the Air Quality Index (AQI), common pollutants, and practical tips for protection against air pollution. The site features an interactive AQI checker for various cities around the world.
 
