@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pollutants Details</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+      background: linear-gradient(135deg, #e8fff3, #f9fffd);
+      color: #222;
+    }
+
+    .hero {
+      text-align: center;
+      padding: 50px 20px;
+    }
+
+    .hero h1 {
+      font-size: 2.3rem;
+      font-weight: 700;
+      color: #111;
+    }
+
+    .hero p {
+      color: #444;
+      max-width: 600px;
+      margin: 15px auto;
+      line-height: 1.6;
+    }
+
+    .pollutants {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 25px;
+      padding: 40px 60px;
+    }
+
+    .card {
+      background: rgba(255, 255, 255, 0.7);
+      backdrop-filter: blur(12px);
+      border-radius: 18px;
+      padding: 25px;
+      text-align: left;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.05);
+      transition: transform 0.2s ease-in-out;
+    }
+
+    .card:hover {
+      transform: translateY(-5px);
+    }
+
+    .card h3 {
+      margin-bottom: 10px;
+      color: #20c997;
+    }
+
+    .card p {
+      color: #333;
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .comparison {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .comparison h2 {
+      margin-bottom: 25px;
+      color: #111;
+    }
+
+    .bars {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 30px;
+    }
+
+    .bar {
+      width: 160px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .bar p {
+      margin-top: 10px;
+      color: #222;
+      font-weight: 500;
+    }
+
+    .bar .level {
+      height: 100px;
+      width: 40px;
+      margin: 0 auto;
+      border-radius: 8px;
+      background: linear-gradient(to top, #ff6b6b, #f9fffd);
+    }
+
+    .tips {
+      padding: 60px 20px;
+      text-align: center;
+    }
+
+    .tips h2 {
+      margin-bottom: 20px;
+      color: #111;
+    }
+
+    .tip-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 25px;
+      margin-top: 20px;
+    }
+
+    .tip {
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(10px);
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+      font-size: 15px;
+    }
+
+    footer {
+      background: #f6fef9;
+      color: #555;
+      padding: 20px;
+      text-align: center;
+      border-top: 1px solid #eaeaea;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Hero -->
+  <section class="hero">
+    <h1>Understand the Pollutants in the Air</h1>
+    <p>
+      The air around us contains tiny invisible particles and gases that affect our health. 
+      Learning about these pollutants helps you make safer choices for yourself and your family.
+    </p>
+  </section>
+
+  <!-- Pollutants Cards -->
+  <section class="pollutants">
+    <div class="card">
+      <h3>PM2.5 (Fine Particles)</h3>
+      <p>
+        Extremely small particles, thinner than a human hair. 
+        <br><b>Sources:</b> Smoke, vehicles, industrial emissions.  
+        <br><b>Health Impact:</b> Penetrates deep into the lungs and even bloodstream, 
+        causing asthma, heart issues, and reduced immunity.
+      </p>
+    </div>
+    <div class="card">
+      <h3>PM10 (Coarse Particles)</h3>
+      <p>
+        Larger dust and dirt particles visible in air.  
+        <br><b>Sources:</b> Road dust, construction sites.  
+        <br><b>Health Impact:</b> Causes throat irritation, cough, and worsens respiratory conditions. 
+        Long-term exposure can damage lungs.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Nitrogen Dioxide (NO₂)</h3>
+      <p>
+        A reddish-brown toxic gas.  
+        <br><b>Sources:</b> Car exhausts, power plants, industries.  
+        <br><b>Health Impact:</b> Irritates lungs, reduces oxygen intake, and increases risk of infections. 
+        Dangerous for children and elderly.
+      </p>
+    </div>
+    <div class="card">
+      <h3>Carbon Monoxide (CO)</h3>
+      <p>
+        A colorless, odorless gas often called the “silent killer.”  
+        <br><b>Sources:</b> Incomplete combustion (car engines, stoves).  
+        <br><b>Health Impact:</b> Blocks oxygen delivery in blood, leading to fatigue, headaches, 
+        and in severe cases, death.
+      </p>
+    </div>
+  </section>
+
+  <!-- Comparison -->
+  <section class="comparison">
+    <h2>Pollutants vs WHO Standards</h2>
+    <div class="bars">
+      <div class="bar">
+        <div class="level" style="height: 90px; background: linear-gradient(to top, #ff6b6b, #ffecec);"></div>
+        <p>PM2.5</p>
+      </div>
+      <div class="bar">
+        <div class="level" style="height: 75px; background: linear-gradient(to top, #ff6b6b, #fff2f2);"></div>
+        <p>PM10</p>
+      </div>
+      <div class="bar">
+        <div class="level" style="height: 50px; background: linear-gradient(to top, #20c997, #e8fff3);"></div>
+        <p>NO₂</p>
+      </div>
+      <div class="bar">
+        <div class="level" style="height: 40px; background: linear-gradient(to top, #20c997, #e8fff3);"></div>
+        <p>CO</p>
+      </div>
+    </div>
+  </section>
+
+
+</body>
+</html>

@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AQI Calculator</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #eafdfc, #ffffff);
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Floating Background Elements */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(80px);
+      opacity: 0.6;
+      z-index: -1;
+    }
+    .blob1 { width: 300px; height: 300px; top: -50px; left: -80px; background: #38b000; }
+    .blob2 { width: 250px; height: 250px; bottom: 100px; right: -60px; background: #ff6b6b; }
+
+    /* Hero */
+    .hero {
+      text-align: center;
+      margin: 40px 20px 20px;
+      padding: 25px;
+      background: rgba(255,255,255,0.5);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+      max-width: 850px;
+      animation: fadeIn 1s ease;
+    }
+    .hero h1 {
+      font-size: 2.7rem;
+      margin-bottom: 10px;
+      color: #0b3d6d;
+    }
+    .hero p {
+      font-size: 1.1rem;
+      color: #333;
+    }
+
+    /* Controls */
+    .controls {
+      display: flex;
+      gap: 15px;
+      margin: 30px 0;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    select {
+      padding: 12px 18px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: 0.3s;
+    }
+    select:hover { transform: scale(1.05); }
+    button {
+      padding: 12px 20px;
+      border-radius: 12px;
+      border: none;
+      font-size: 1rem;
+      cursor: pointer;
+      background: linear-gradient(to right, #38b000, #70e000);
+      color: white;
+      font-weight: bold;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      transition: 0.3s;
+    }
+    button:hover { transform: scale(1.05) rotate(-1deg); }
+
+    /* Result Box */
+    .result-box {
+      display: none;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 30px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      text-align: center;
+      width: 90%;
+      max-width: 650px;
+      margin-bottom: 40px;
+      animation: slideUp 0.8s ease;
+    }
+    .result-box h2 { margin: 0; font-size: 1.6rem; }
+
+    /* AQI Bar */
+    .bar-container {
+      width: 100%;
+      background: #ddd;
+      border-radius: 20px;
+      height: 30px;
+      margin: 20px 0;
+      overflow: hidden;
+    }
+    .bar-fill {
+      height: 100%;
+      width: 0;
+      line-height: 30px;
+      text-align: right;
+      padding-right: 10px;
+      color: white;
+      font-weight: bold;
+      border-radius: 20px;
+      transition: width 1s ease, background 0.4s ease, box-shadow 0.4s;
+    }
+    .suggestion {
+      font-size: 1rem;
+      font-weight: 500;
+      margin-top: 10px;
+    }
+
+    /* Extra Info Cards */
+    .extra-info {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px,1fr));
+      gap: 18px;
+      margin-top: 20px;
+    }
+    .info-card {
+      background: rgba(255,255,255,0.65);
+      backdrop-filter: blur(12px);
+      padding: 18px;
+      border-radius: 15px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.12);
+      font-size: 0.9rem;
+      transition: transform 0.3s;
+    }
+    .info-card:hover { transform: translateY(-5px) scale(1.03); }
+    .info-card h3 {
+      margin: 0 0 8px;
+      font-size: 1rem;
+      color: #0b3d6d;
+    }
+
+    /* AQI Legend */
+    .legend {
+      display: flex;
+      justify-content: space-around;
+      margin: 25px 0 10px;
+      font-size: 0.9rem;
+    }
+    .legend div {
+      padding: 8px 12px;
+      border-radius: 10px;
+      color: white;
+    }
+    .good { background: #38b000; }
+    .moderate { background: #ffb703; }
+    .unhealthy { background: #d00000; }
+    .hazardous { background: #6a040f; }
+
+    /* Tips */
+    .tips {
+      max-width: 850px;
+      margin: 20px auto 60px;
+      padding: 25px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.6);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+    }
+    .tips h2 { text-align: center; margin-bottom: 15px; }
+    .tips ul { list-style: none; padding: 0; }
+    .tips li {
+      margin: 10px 0;
+      padding-left: 30px;
+      position: relative;
+      font-size: 1rem;
+    }
+    .tips li::before {
+      position: absolute; left: 0; top: 0;
+    }
+    .tips li:nth-child(1)::before { content: "😷"; }
+    .tips li:nth-child(2)::before { content: "🌿"; }
+    .tips li:nth-child(3)::before { content: "🏠"; }
+    .tips li:nth-child(4)::before { content: "💧"; }
+    .tips li:nth-child(5)::before { content: "🚗"; }
+
+    /* Animations */
+    @keyframes fadeIn { from{opacity:0;} to{opacity:1;} }
+    @keyframes slideUp { from{transform:translateY(20px); opacity:0;} to{transform:translateY(0); opacity:1;} }
+  </style>
+</head>
+<body>
+  <!-- Background Blobs -->
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+
+  <!-- Hero -->
+  <div class="hero">
+    <h1>🌬️ Air Quality Index (AQI) Checker</h1>
+    <p>Choose your city to check the current AQI, understand its impact, and get protection advice.</p>
+  </div>
+
+  <!-- Controls -->
+  <div class="controls">
+    <select id="citySelect"></select>
+    <button id="fetchAQI">Get AQI</button>
+  </div>
+
+  <!-- Result -->
+  <div class="result-box" id="resultBox">
+    <h2 id="cityName"></h2>
+    <div class="bar-container">
+      <div class="bar-fill" id="aqiBar">0</div>
+    </div>
+    <div class="suggestion" id="suggestionText"></div>
+
+    <!-- Extra Info Cards -->
+    <div class="extra-info">
+      <div class="info-card">
+        <h3>👤 Health Impact</h3>
+        <p id="impactText">--</p>
+      </div>
+      <div class="info-card">
+        <h3>⚠️ At Risk</h3>
+        <p id="riskText">--</p>
+      </div>
+      <div class="info-card">
+        <h3>💡 Advice</h3>
+        <p id="adviceText">--</p>
+      </div>
+    </div>
+
+    <!-- AQI Legend -->
+    <div class="legend">
+      <div class="good">Good (0–100)</div>
+      <div class="moderate">Moderate (101–150)</div>
+      <div class="unhealthy">Unhealthy (151–200)</div>
+      <div class="hazardous">Hazardous (200+)</div>
+    </div>
+  </div>
+
+  <!-- Final Tips -->
+  <div class="tips">
+    <h2>General Protection Tips</h2>
+    <ul>
+      <li>Always wear a mask when AQI is poor.</li>
+      <li>Use air-purifying indoor plants like snake plant & peace lily.</li>
+      <li>Keep windows closed during high pollution hours.</li>
+      <li>Stay hydrated to flush out toxins from your body.</li>
+      <li>Prefer public transport or cycling to reduce emissions.</li>
+    </ul>
+  </div>
+
+  <script>
+    // Pre-fed AQI Data
+    const aqiData = {
+      "Delhi": { value: 180, impact: "High risk of respiratory issues", risk: "Children, elderly, heart/lung patients", advice: "Avoid outdoor activity" },
+      "Mumbai": { value: 95, impact: "Acceptable but some discomfort possible", risk: "Sensitive groups", advice: "Limit prolonged outdoor exertion" },
+      "Beijing": { value: 200, impact: "Unhealthy air quality", risk: "Everyone at risk", advice: "Avoid outdoor exertion" },
+      "Tokyo": { value: 130, impact: "Unhealthy for sensitive groups", risk: "Children, elderly", advice: "Reduce time outdoors" },
+      "Singapore": { value: 110, impact: "Unhealthy for sensitive groups", risk: "Elderly, children", advice: "Wear mask outdoors" },
+      "Dhaka": { value: 220, impact: "Very unhealthy air quality", risk: "Everyone at risk", advice: "Stay indoors, use air purifiers" },
+      "Bangkok": { value: 90, impact: "Moderate but manageable", risk: "Sensitive groups", advice: "Avoid outdoor activities during peak hours" },
+      "Seoul": { value: 140, impact: "Unhealthy for sensitive groups", risk: "Children, elderly", advice: "Limit outdoor exertion" },
+
+      "London": { value: 45, impact: "Air quality is good", risk: "No significant risk", advice: "Enjoy outdoor activities" },
+      "Paris": { value: 80, impact: "Moderate", risk: "Sensitive groups", advice: "Consider reducing outdoor time" },
+      "Berlin": { value: 70, impact: "Fairly good", risk: "Minor risk to sensitive groups", advice: "Safe to be outdoors" },
+      "Rome": { value: 100, impact: "Moderate pollution", risk: "Asthma patients, elderly", advice: "Limit prolonged exertion" },
+      "Moscow": { value: 160, impact: "Unhealthy air quality", risk: "Sensitive groups and elderly", advice: "Wear protective mask outdoors" },
+      "Madrid": { value: 85, impact: "Moderate", risk: "Children with asthma", advice: "Safe with precautions" },
+
+      "New York": { value: 60, impact: "Generally okay", risk: "Sensitive groups may feel mild effects", advice: "Safe to go outside" },
+      "Los Angeles": { value: 120, impact: "Moderate to unhealthy for sensitive groups", risk: "Children, elderly", advice: "Limit time outdoors" },
+      "Toronto": { value: 55, impact: "Good", risk: "Low risk", advice: "Safe outdoors" },
+      "Mexico City": { value: 170, impact: "Unhealthy", risk: "Everyone at risk", advice: "Reduce outdoor activity" },
+
+      "São Paulo": { value: 150, impact: "Unhealthy for sensitive groups", risk: "Elderly, children", advice: "Avoid long exposure outdoors" },
+      "Buenos Aires": { value: 95, impact: "Moderate", risk: "Sensitive groups", advice: "Stay cautious outdoors" },
+      "Santiago": { value: 180, impact: "Unhealthy", risk: "All groups at risk", advice: "Wear protective mask" },
+
+      "Cairo": { value: 190, impact: "Unhealthy", risk: "Children, elderly", advice: "Limit outdoor time" },
+      "Lagos": { value: 210, impact: "Very unhealthy", risk: "Everyone at risk", advice: "Stay indoors" },
+      "Nairobi": { value: 75, impact: "Moderate", risk: "Sensitive groups", advice: "Safe with some precautions" },
+      "Johannesburg": { value: 100, impact: "Moderate pollution", risk: "Asthma patients", advice: "Limit prolonged exertion" },
+
+      "Sydney": { value: 55, impact: "Good, slight issues for sensitive groups", risk: "Sensitive groups", advice: "Enjoy outdoor activities" },
+      "Melbourne": { value: 65, impact: "Good to moderate", risk: "Very low risk", advice: "Safe outdoors" },
+      "Auckland": { value: 50, impact: "Good", risk: "Low risk", advice: "Breathe easy" }
+    };
+
+    // Auto populate dropdown
+    const citySelect = document.getElementById("citySelect");
+    Object.keys(aqiData).forEach(city => {
+      const option = document.createElement("option");
+      option.value = city;
+      option.textContent = city;
+      citySelect.appendChild(option);
+    });
+
+    const resultBox = document.getElementById("resultBox");
+    const cityName = document.getElementById("cityName");
+    const aqiBar = document.getElementById("aqiBar");
+    const suggestionText = document.getElementById("suggestionText");
+
+    const impactText = document.getElementById("impactText");
+    const riskText = document.getElementById("riskText");
+    const adviceText = document.getElementById("adviceText");
+
+    document.getElementById("fetchAQI").addEventListener("click", () => {
+      const city = citySelect.value;
+      const data = aqiData[city];
+
+      resultBox.style.display = "block";
+      cityName.innerText = `${city} - AQI ${data.value}`;
+
+      // AQI Bar
+      let percent = Math.min(data.value / 3, 100); 
+      aqiBar.style.width = percent + "%";
+      aqiBar.innerText = data.value;
+
+      // Color + Suggestion
+      if (data.value <= 100) {
+        aqiBar.style.background = "linear-gradient(to right,#38b000,#70e000)";
+        aqiBar.style.boxShadow = "0 0 15px #38b000";
+        suggestionText.innerText = "✅ Air quality is good. Safe to go outside.";
+      } else if (data.value <= 150) {
+        aqiBar.style.background = "linear-gradient(to right,#ffb703,#ffd166)";
+        aqiBar.style.boxShadow = "0 0 15px #ffb703";
+        suggestionText.innerText = "⚠️ Moderate pollution. Sensitive groups should reduce outdoor activity.";
+      } else if (data.value <= 200) {
+        aqiBar.style.background = "linear-gradient(to right,#d00000,#ff4d6d)";
+        aqiBar.style.boxShadow = "0 0 15px #d00000";
+        suggestionText.innerText = "❌ Unhealthy air. Avoid outdoor activities.";
+      } else {
+        aqiBar.style.background = "linear-gradient(to right,#6a040f,#9d0208)";
+        aqiBar.style.boxShadow = "0 0 20px #6a040f";
+        suggestionText.innerText = "☠️ Hazardous! Stay indoors and use purifiers.";
+      }
+
+      // Extra Info
+      impactText.innerText = data.impact;
+      riskText.innerText = data.risk;
+      adviceText.innerText = data.advice;
+    });
+  </script>
+</body>
+</html>
